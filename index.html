@@ -51,10 +51,26 @@
     .hero-buttons{display:flex;gap:11px;flex-wrap:wrap}.hero-meta{display:flex;gap:30px;margin-top:38px}.meta-item strong{display:block;font-size:20px}.meta-item span{font-size:11px;color:var(--muted)}
     .hero-art{height:100%;min-height:390px;position:relative;display:flex;align-items:center;justify-content:center}
     .hero-art:before{content:"";position:absolute;width:390px;height:390px;border-radius:50%;border:1px solid #ffffff14;box-shadow:0 0 0 42px #ffffff08,0 0 0 84px #ffffff05}
-    .hero-car{position:relative;width:92%;max-width:540px;filter:drop-shadow(0 28px 24px #0009);transform:rotate(-7deg);z-index:1}
-    .hero-car img{display:block;width:100%;height:310px;object-fit:contain;clip-path:polygon(4% 11%,95% 0,100% 87%,0 100%);border-radius:24px;opacity:.98;mix-blend-mode:normal;background:radial-gradient(ellipse at center,#ffffff12,transparent 70%);padding:6px}
-    .floating-label{position:absolute;z-index:2;right:38px;bottom:62px;background:#111216df;border:1px solid #ffffff22;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow)}
-    .floating-label small{display:block;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}.floating-label strong{font-size:14px}
+    .hero-car{position:relative;width:92%;max-width:540px;height:310px;filter:drop-shadow(0 28px 24px #0009);transform:rotate(-7deg);z-index:1}
+    .hero-slides{position:absolute;inset:0}
+    .hero-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translate3d(46px,12px,0) scale(.94);transition:opacity .65s ease,transform .85s cubic-bezier(.22,.7,.2,1),visibility .65s;pointer-events:none}
+    .hero-slide.is-active{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+    .hero-slide img,.hero-slides>img{display:block;width:100%;height:100%;object-fit:contain;clip-path:polygon(4% 11%,95% 0,100% 87%,0 100%);border-radius:24px;background:radial-gradient(ellipse at center,#ffffff12,transparent 70%);padding:6px;cursor:pointer;translate:0 0;animation:heroFloat 6s ease-in-out infinite}
+    .hero-slide:not(.is-active) img{animation-play-state:paused}
+    @keyframes heroFloat{0%,100%{translate:0 0}50%{translate:0 -9px}}
+    .hero-tag{position:absolute;z-index:3;top:22px;right:26px;display:inline-flex;align-items:center;gap:6px;font-size:9px;letter-spacing:1.4px;text-transform:uppercase;font-weight:900;color:#ffd9d7;background:#e5393524;border:1px solid #e5393559;padding:5px 9px;border-radius:99px}
+    .hero-tag:before{content:"";width:6px;height:6px;border-radius:50%;background:#ff514b;animation:heroPulse 1.8s infinite}
+    @keyframes heroPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 #ff514bcc}70%{opacity:.65;box-shadow:0 0 0 7px #ff514b00}}
+    .hero-dots{position:absolute;z-index:4;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:7px}
+    .hero-dot{width:7px;height:7px;padding:0;border:0;border-radius:99px;background:#ffffff38;cursor:pointer;transition:width .3s,background .3s}
+    .hero-dot.is-active{width:26px;background:var(--red)}
+    .hero-dot:focus-visible{outline:2px solid #ff8a86;outline-offset:4px}
+    .floating-label{position:absolute;z-index:2;right:38px;bottom:62px;background:#111216df;border:1px solid #ffffff22;border-radius:14px;padding:13px 16px;box-shadow:var(--shadow);max-width:min(300px,72%)}
+    .floating-label small{display:block;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}.floating-label strong{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .floating-label .hero-price{display:block;margin-top:5px;color:#ff8a86;font-size:12px;font-weight:900}
+    .floating-label.swap{animation:labelSwap .45s ease}
+    @keyframes labelSwap{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.hero-slide img{animation:none}.hero-tag:before{animation:none}.hero-slide{transition:opacity .2s linear;transform:none}}
     .trust-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0 58px}
     .trust-card{padding:17px;border:1px solid var(--line);border-radius:15px;background:var(--surface);display:flex;align-items:center;gap:13px}
     .trust-icon{width:39px;height:39px;border-radius:12px;background:#e539351c;color:#ff7772;display:grid;place-items:center;font-size:18px;flex:none}
@@ -96,7 +112,7 @@
     .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);z-index:100;background:#f4f4f6;color:#17181f;border-radius:12px;padding:11px 16px;font-size:12px;font-weight:800;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}
     .mobile-filter{display:none}.muted{color:var(--muted)}
     @media(max-width:1000px){.nav{gap:15px}.nav-links{gap:14px}.nav-links a{font-size:12px}.hero-copy{padding-left:35px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brands{grid-template-columns:repeat(3,1fr)}.trust-row{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:760px){.container{width:min(100% - 28px,var(--max))}.nav{height:66px;gap:10px}.nav-links{display:none;position:absolute;top:66px;left:0;right:0;background:#17181f;border-bottom:1px solid var(--line);padding:16px 20px;flex-direction:column;align-items:flex-start}.nav-links.show{display:flex}.nav-search{display:none}.mobile-menu{display:grid}.nav-actions .desktop-only{display:none}.logo{font-size:16px}.logo-mark{width:34px;height:34px}.hero{padding-top:20px}.hero-wrap{grid-template-columns:1fr;min-height:auto}.hero-copy{padding:34px 25px 10px}.hero-copy p{font-size:13px}.hero-art{min-height:230px}.hero-art:before{width:220px;height:220px;box-shadow:0 0 0 25px #ffffff08,0 0 0 50px #ffffff05}.hero-car{width:85%}.hero-car img{height:190px}.floating-label{right:15px;bottom:18px;padding:9px 11px}.floating-label strong{font-size:11px}.hero-meta{margin-top:24px;gap:22px}.meta-item strong{font-size:17px}.trust-row{margin:13px 0 38px;gap:8px}.trust-card{padding:12px;gap:9px}.trust-icon{width:32px;height:32px}.trust-card strong{font-size:10px}.trust-card span{font-size:9px}.section-head{align-items:flex-start}.section-head h2{font-size:25px}.brands{grid-template-columns:repeat(3,1fr);gap:8px}.brand-card{height:82px}.catalog-layout{grid-template-columns:1fr}.filter-panel{display:none;position:static}.filter-panel.show{display:block}.mobile-filter{display:inline-flex}.product-grid{gap:9px}.product-photo{height:145px}.product-info{padding:10px}.product-name{font-size:11px}.product-desc{font-size:9px}.price{font-size:12px}.spec-pill{font-size:8px}.product-bottom{margin-top:9px}.rarity-section{padding:22px 17px}.rarity-layout{grid-template-columns:1fr;gap:18px}.rarity-copy p{font-size:12px}.rarity-result{min-height:unset}.seller-banner{padding:21px;display:block}.seller-banner .btn{margin-top:17px}.seller-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr;gap:23px}.footer-brand{grid-column:1/-1}.copyright{flex-direction:column}.detail-layout{grid-template-columns:1fr}.detail-image{height:220px}.seller-table{min-width:560px}.table-wrap{overflow:auto}}
+    @media(max-width:760px){.container{width:min(100% - 28px,var(--max))}.nav{height:66px;gap:10px}.nav-links{display:none;position:absolute;top:66px;left:0;right:0;background:#17181f;border-bottom:1px solid var(--line);padding:16px 20px;flex-direction:column;align-items:flex-start}.nav-links.show{display:flex}.nav-search{display:none}.mobile-menu{display:grid}.nav-actions .desktop-only{display:none}.logo{font-size:16px}.logo-mark{width:34px;height:34px}.hero{padding-top:20px}.hero-wrap{grid-template-columns:1fr;min-height:auto}.hero-copy{padding:34px 25px 10px}.hero-copy p{font-size:13px}.hero-art{min-height:230px}.hero-art:before{width:220px;height:220px;box-shadow:0 0 0 25px #ffffff08,0 0 0 50px #ffffff05}.hero-art{min-height:0;flex-direction:column;padding:26px 14px 16px}.hero-car{width:100%;height:176px;transform:rotate(-4deg);margin-top:12px}.hero-tag{top:12px;right:12px;font-size:8px;padding:4px 7px}.hero-dots{position:static;order:3;left:auto;bottom:auto;transform:none;margin-top:12px}.hero-dot{width:6px;height:6px}.hero-dot.is-active{width:20px}.floating-label{position:static;order:2;right:auto;bottom:auto;margin-top:16px;padding:9px 12px;max-width:100%;width:100%;text-align:center}.floating-label strong{font-size:11px}.floating-label .hero-price{font-size:10px}.hero-meta{margin-top:24px;gap:22px}.meta-item strong{font-size:17px}.trust-row{margin:13px 0 38px;gap:8px}.trust-card{padding:12px;gap:9px}.trust-icon{width:32px;height:32px}.trust-card strong{font-size:10px}.trust-card span{font-size:9px}.section-head{align-items:flex-start}.section-head h2{font-size:25px}.brands{grid-template-columns:repeat(3,1fr);gap:8px}.brand-card{height:82px}.catalog-layout{grid-template-columns:1fr}.filter-panel{display:none;position:static}.filter-panel.show{display:block}.mobile-filter{display:inline-flex}.product-grid{gap:9px}.product-photo{height:145px}.product-info{padding:10px}.product-name{font-size:11px}.product-desc{font-size:9px}.price{font-size:12px}.spec-pill{font-size:8px}.product-bottom{margin-top:9px}.rarity-section{padding:22px 17px}.rarity-layout{grid-template-columns:1fr;gap:18px}.rarity-copy p{font-size:12px}.rarity-result{min-height:unset}.seller-banner{padding:21px;display:block}.seller-banner .btn{margin-top:17px}.seller-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr;gap:23px}.footer-brand{grid-column:1/-1}.copyright{flex-direction:column}.detail-layout{grid-template-columns:1fr}.detail-image{height:220px}.seller-table{min-width:560px}.table-wrap{overflow:auto}}
     @media(max-width:390px){.container{width:calc(100% - 22px)}h1{font-size:39px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.product-photo{height:125px}.trust-card{padding:9px}.hero-buttons .btn{font-size:11px;padding:10px 12px}.rarity-details{grid-template-columns:repeat(2,1fr)}}
 
     /* ============ DIECAST HUB — v2 additions ============ */
@@ -377,8 +393,10 @@
             <div class="hero-meta"><div class="meta-item"><strong>Multi-brand</strong><span>Beragam merek diecast</span></div><div class="meta-item"><strong>Collector Hub</strong><span>Belanja & informasi</span></div></div><p style="font-size:9px;color:#858791;margin-top:15px">Foto display merupakan gambar referensi untuk prototype.</p>
           </div>
           <div class="hero-art">
-            <div class="hero-car"><img src="https://i0.wp.com/lamleygroup.com/wp-content/uploads/2021/01/IMG_3909.jpg?ssl=1" alt="Display koleksi miniatur diecast dari berbagai merek" loading="eager" fetchpriority="high" /></div>
-            <div class="floating-label"><small>Built for collectors</small><strong>Your next favorite is here.</strong></div>
+            <div class="hero-tag">Spotlight koleksi</div>
+            <div class="hero-car"><div class="hero-slides" id="heroSlides"><img src="https://i0.wp.com/lamleygroup.com/wp-content/uploads/2021/01/IMG_3909.jpg?ssl=1" alt="Display koleksi miniatur diecast dari berbagai merek" loading="eager" fetchpriority="high" /></div></div>
+            <div class="hero-dots" id="heroDots" role="tablist" aria-label="Pilihan diecast unggulan"></div>
+            <div class="floating-label" id="heroLabel" aria-live="polite"><small id="heroLabelKicker">Built for collectors</small><strong id="heroLabelTitle">Your next favorite is here.</strong><span class="hero-price" id="heroLabelPrice"></span></div>
           </div>
         </div>
         <div class="trust-row">
@@ -1642,6 +1660,70 @@ function populateBrandShowcase(){
   wrap.innerHTML=DB.brands.filter(b=>b.status!=='inactive').map(b=>`<button class="brand-card" onclick="setBrand(${jsArg(b.name)})"><span class="brand-symbol" style="color:${esc(/^#[0-9a-f]{3,8}$/i.test(b.color||'')?b.color:'#f4f4f6')}">${esc(b.symbol||String(b.name).toUpperCase())}</span><span>${esc(b.name)}</span></button>`).join('');
 }
 
+/* ============================== HERO SHOWCASE (auto-rotate) ============================== */
+const HERO_SHOW={items:[],index:0,timer:null,delay:5200,paused:false};
+function heroPick(){
+  const list=publicProducts().filter(p=>p&&safeUrl(p.image));
+  const picks=[],brands=[];
+  list.slice().sort((a,b)=>(Number(b.views)||0)-(Number(a.views)||0)).forEach(p=>{
+    if(picks.length>=5||brands.includes(p.brand))return;
+    brands.push(p.brand);picks.push(p);
+  });
+  list.forEach(p=>{if(picks.length<5&&!picks.includes(p))picks.push(p)});
+  return picks;
+}
+function heroLabelUpdate(p){
+  if(!p)return;
+  const kicker=document.getElementById('heroLabelKicker'),title=document.getElementById('heroLabelTitle'),price=document.getElementById('heroLabelPrice'),label=document.getElementById('heroLabel');
+  if(kicker)kicker.textContent=(p.brand||'Diecast')+(p.category?' · '+p.category:'');
+  if(title)title.textContent=p.name||'Diecast pilihan';
+  if(price)price.textContent=p.price?rupiah(p.price):'';
+  if(label){label.classList.remove('swap');void label.offsetWidth;label.classList.add('swap')}
+}
+function heroRender(){
+  const wrap=document.getElementById('heroSlides'),dots=document.getElementById('heroDots');
+  if(!wrap||!dots)return;
+  const items=heroPick();
+  HERO_SHOW.items=items;HERO_SHOW.index=0;
+  if(!items.length)return;
+  wrap.innerHTML=items.map((p,i)=>{
+    const src=safeUrl(p.image)||imageSet.display;
+    return `<figure class="hero-slide${i===0?' is-active':''}"><img src="${esc(src)}" alt="${esc(p.name)} — ${esc(p.brand)} diecast ${esc(p.scale||'')}" loading="${i===0?'eager':'lazy'}" fetchpriority="${i===0?'high':'low'}" draggable="false" onclick="openProductDetail(${Number(p.id)})" onerror="this.onerror=null;this.src='${imageSet.display}'" /></figure>`;
+  }).join('');
+  dots.innerHTML=items.map((p,i)=>`<button type="button" class="hero-dot${i===0?' is-active':''}" role="tab" aria-selected="${i===0}" aria-label="Tampilkan ${esc(p.name)}" onclick="heroGo(${i},true)"></button>`).join('');
+  heroLabelUpdate(items[0]);
+  heroSchedule();
+}
+function heroGo(i,manual){
+  const items=HERO_SHOW.items;
+  if(items.length<2){if(items[0])heroLabelUpdate(items[0]);return}
+  const n=((i%items.length)+items.length)%items.length;
+  HERO_SHOW.index=n;
+  document.querySelectorAll('#heroSlides .hero-slide').forEach((el,k)=>el.classList.toggle('is-active',k===n));
+  document.querySelectorAll('#heroDots .hero-dot').forEach((el,k)=>{
+    const on=k===n;el.classList.toggle('is-active',on);el.setAttribute('aria-selected',on?'true':'false');
+  });
+  heroLabelUpdate(items[n]);
+  if(manual)heroSchedule();
+}
+function heroSchedule(){
+  clearTimeout(HERO_SHOW.timer);HERO_SHOW.timer=null;
+  if(HERO_SHOW.paused||HERO_SHOW.items.length<2)return;
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  HERO_SHOW.timer=setTimeout(()=>{heroGo(HERO_SHOW.index+1);heroSchedule()},HERO_SHOW.delay);
+}
+function initHeroShowcase(){
+  heroRender();
+  const art=document.querySelector('.hero-art');
+  if(art){
+    art.addEventListener('pointerenter',()=>{HERO_SHOW.paused=true;clearTimeout(HERO_SHOW.timer)});
+    art.addEventListener('pointerleave',()=>{HERO_SHOW.paused=false;heroSchedule()});
+    art.addEventListener('focusin',()=>{HERO_SHOW.paused=true;clearTimeout(HERO_SHOW.timer)});
+    art.addEventListener('focusout',()=>{HERO_SHOW.paused=false;heroSchedule()});
+  }
+  document.addEventListener('visibilitychange',()=>{document.hidden?clearTimeout(HERO_SHOW.timer):heroSchedule()});
+}
+
 /* ============================== INIT PUBLIC ============================== */
 function initPublic(){
   populateBrandShowcase();
@@ -1661,6 +1743,7 @@ function initPublic(){
   });
   document.addEventListener('fullscreenchange',()=>{if(window.DH3D)setTimeout(()=>window.DH3D.resize(),120)});
   renderProducts();saveCart();renderWishlist();renderSellerTable();
+  initHeroShowcase();
 }
 /* ==========================================================================
    DIECAST HUB — administrator dashboard
