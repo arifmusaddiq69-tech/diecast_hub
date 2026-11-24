@@ -18,7 +18,7 @@ Alternatif: `npx serve .`, ekstensi Live Server VS Code, atau server statis apa 
 
 ## Deploy ke Vercel + pasang domain
 
-Proyek ini statis murni (satu `index.html`, tanpa build), jadi cukup dihubungkan ke Vercel — tidak perlu `vercel.json`.
+Proyek ini statis murni (satu `index.html`, tanpa build). `vercel.json` hanya berisi **security header** (CSP, HSTS, `nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`) dan `cleanUrls` — tidak ada konfigurasi build.
 
 1. Pastikan `index.html`, `README.md`, dan `.gitignore` sudah ada di repositori GitHub (branch `main`).
 2. Buka [vercel.com/new](https://vercel.com/new) → **Import** repositori `diecast_hub`.
@@ -45,11 +45,21 @@ Catatan: foto produk dan model memakai URL eksternal (CDN Sketchfab, toko online
 
 ## Login administrator
 
-- Buka tombol **Admin** di navigasi, ikon profil, atau tautan **Admin Dashboard** di footer.
+- Buka tombol **Admin** di navigasi, atau tautan **Admin Dashboard** di footer.
 - Username: `admin`
-- Password: `admin123`
+- Password: `admin123` (kredensial demo — **ganti setelah login pertama**)
 
-Sesi login disimpan di `sessionStorage`. Logout mengembalikan ke halaman login dan menutup dashboard. Dashboard tidak dapat dibuka tanpa login. Kredensial ini hanya untuk prototype frontend.
+Sesi login disimpan di `sessionStorage` dengan batas waktu (idle 30 menit, maksimal 8 jam). Logout mengembalikan ke halaman login dan menutup dashboard. Dashboard tidak dapat dibuka tanpa login.
+
+Keamanan yang aktif di prototype ini:
+
+- Password disimpan sebagai **hash PBKDF2-SHA256** (120.000 iterasi + salt acak), bukan plaintext. Data lama dimigrasikan otomatis.
+- **Rate limit**: maksimal 5 percobaan login per 15 menit, lalu terkunci 15 menit.
+- **MFA/TOTP opsional** (authenticator 6 digit + 8 kode pemulihan) — aktifkan di **Admin → Keamanan**.
+- Di production (HTTPS non-localhost) dashboard **mewajibkan ganti password** sebelum bisa dipakai.
+- Log keamanan 90 hari, snapshot cadangan otomatis, dan tombol hapus data lokal.
+
+Detail lengkap, termasuk hasil uji dan batasannya: [SECURITY.md](SECURITY.md).
 
 ## Fitur yang sudah berfungsi
 
@@ -101,6 +111,23 @@ Produk **Lamborghini Revuelto SV** (id 7) memakai model Sketchfab [2027 Lamborgh
 - Kamera awal mengikuti tampilan yang disimpan pembuat model (close-up depan). Scroll/pinch di dalam model untuk melihat keseluruhan mobil; tombol ⟲ mengembalikan tampilan awal dari Sketchfab.
 
 Menambahkan model Sketchfab lain: Admin → **3D Model Management** → isi **Sketchfab Model ID / URL** dengan ID 32 karakter atau tautan model. Status otomatis menjadi `Sketchfab embed`. Jika kelak Anda punya file `.glb` berlisensi, kosongkan field Sketchfab dan isi URL GLB agar viewer memakai WebGL penuh.
+
+## Keamanan
+
+Ringkasan kontrol, hasil uji, dan batasan ada di [SECURITY.md](SECURITY.md). Yang paling cepat dicek:
+
+| Kontrol | Status |
+|---|---|
+| Password di-hash PBKDF2-SHA256 + salt | ✅ |
+| Rate limit login (5×/15 menit) | ✅ |
+| MFA TOTP + kode pemulihan | ✅ (aktifkan di Admin → Keamanan) |
+| Sesi timeout + wajib ganti password di production | ✅ |
+| Escaping output + validasi URL/angka (anti-XSS) | ✅ |
+| CSP, HSTS, `nosniff`, `X-Frame-Options`, `Referrer-Policy` | ✅ (header `vercel.json` + meta) |
+| Log keamanan & retensi 90 hari | ✅ |
+| Snapshot cadangan (3 versi) + ekspor JSON | ✅ |
+| Kebijakan privasi + hapus data lokal | ✅ |
+| Verifikasi sesi di server, WAF, audit log terpusat | ❌ butuh backend |
 
 ## Penyimpanan data
 

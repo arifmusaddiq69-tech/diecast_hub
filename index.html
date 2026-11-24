@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#111216" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: data: blob:; frame-src https://sketchfab.com; media-src 'self' https: data: blob:; worker-src 'self' blob:; manifest-src 'self'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="description" content="Diecast Hub — marketplace dan pusat informasi diecast untuk kolektor." />
   <title>Diecast Hub — Discover, Collect & Trade</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -98,6 +101,19 @@
 
     /* ============ DIECAST HUB — v2 additions ============ */
     .hidden{display:none!important}
+    /* ---- security layer ---- */
+    .sec-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px dashed #ffffff10;font-size:11px}
+    .sec-row:last-child{border-bottom:0;padding-bottom:0}
+    .sec-dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px;background:#6b7280}
+    .sec-dot.ok{background:#3ddc97}.sec-dot.warn{background:#e6b94a}.sec-dot.off{background:#e53935}
+    .sec-row b{font-size:11px;display:block;color:#f4f4f6;font-weight:800}
+    .sec-row span{color:var(--muted);font-size:10px;line-height:1.6}
+    .code-box{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:1px;background:#0f1015;border:1px solid var(--line);border-radius:9px;padding:9px 11px;word-break:break-all;color:#9fe8c4;margin:8px 0}
+    .login-secure{margin-top:10px;font-size:9px;line-height:1.6;color:var(--muted-2);text-align:center}
+    .pill-mini{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.4px;padding:2px 7px;border-radius:20px;border:1px solid #ffffff1a}
+    .pill-mini.ok{background:#3ddc9718;border-color:#3ddc9740;color:#7ff0bf}
+    .pill-mini.off{background:#e5393518;border-color:#e5393540;color:#ffb1ae}
+    .login-hint.warn{border-style:solid;border-color:#e6b94a52;background:#e6b94a10;color:#e9d6a3}
     .toast.ok{background:#b7f0d6;color:#0d3a29}
     .toast.err{background:#ffb4b1;color:#5b1113}
     .notice{border:1px solid #e6b94a40;background:#e6b94a12;color:#e9d6a3;font-size:11px;line-height:1.6;padding:10px 12px;border-radius:10px}
@@ -473,7 +489,7 @@
   </section>
 
   <footer>
-    <div class="container"><div class="footer-grid"><div class="footer-brand"><a class="logo" href="#home"><span class="logo-mark">DH</span><span>DIECAST HUB<small>COLLECTOR MARKETPLACE</small></span></a><p>Tempat menemukan, mengenal, mengoleksi, dan memperdagangkan diecast dari berbagai merek dalam satu ekosistem.</p></div><div class="footer-col"><strong>Jelajahi</strong><a href="#catalog">Katalog Diecast</a><a href="#brands">Brand</a><a href="#rarity">Rarity Checker</a></div><div class="footer-col"><strong>Marketplace</strong><a href="#seller">Mulai Berjualan</a><a href="#seller">Dashboard Seller</a><a href="#catalog">Produk Terbaru</a></div><div class="footer-col"><strong>Informasi</strong><a href="#home">Tentang Diecast Hub</a><a href="#home">Bantuan</a><a href="#" onclick="event.preventDefault();openAdminEntry()">Admin Dashboard</a></div></div><div class="copyright"><span>© 2026 Diecast Hub. Prototype UI/UX.</span><span>Discover · Collect · Trade</span></div></div>
+    <div class="container"><div class="footer-grid"><div class="footer-brand"><a class="logo" href="#home"><span class="logo-mark">DH</span><span>DIECAST HUB<small>COLLECTOR MARKETPLACE</small></span></a><p>Tempat menemukan, mengenal, mengoleksi, dan memperdagangkan diecast dari berbagai merek dalam satu ekosistem.</p></div><div class="footer-col"><strong>Jelajahi</strong><a href="#catalog">Katalog Diecast</a><a href="#brands">Brand</a><a href="#rarity">Rarity Checker</a></div><div class="footer-col"><strong>Marketplace</strong><a href="#seller">Mulai Berjualan</a><a href="#seller">Dashboard Seller</a><a href="#catalog">Produk Terbaru</a></div><div class="footer-col"><strong>Informasi</strong><a href="#home">Tentang Diecast Hub</a><a href="#" onclick="event.preventDefault();openPrivacy()">Kebijakan Privasi</a><a href="#" onclick="event.preventDefault();openAdminEntry()">Admin Dashboard</a></div></div><div class="copyright"><span>© 2026 Diecast Hub. Prototype UI/UX.</span><span>Discover · Collect · Trade</span></div></div>
   </footer>
 
   <!-- Wishlist drawer -->
@@ -497,12 +513,29 @@
       <h2 style="font-size:24px;margin:6px 0 4px">Masuk ke Dashboard</h2>
       <p class="muted" style="font-size:12px;margin:0 0 18px">Kelola produk, seller, pesanan, dan konten Diecast Hub.</p>
       <div class="field"><label for="adminUsername">Username</label><input id="adminUsername" autocomplete="username" required placeholder="admin" /></div>
-      <div class="field"><label for="adminPassword">Password</label><input id="adminPassword" type="password" autocomplete="current-password" required placeholder="admin123" /></div>
+      <div class="field"><label for="adminPassword">Password</label><input id="adminPassword" type="password" autocomplete="current-password" required maxlength="128" placeholder="••••••••" /></div>
+      <div class="field hidden" id="adminMfaField"><label for="adminMfaCode">Kode verifikasi 2 langkah</label><input id="adminMfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="123456 atau kode pemulihan" /><div class="inline-note">6 digit dari aplikasi authenticator, atau salah satu kode pemulihan.</div></div>
       <div class="login-error" id="loginError"></div>
       <button class="btn" style="width:100%;margin-top:4px" type="submit">Masuk →</button>
-      <div class="login-hint">Kredensial demo: <b>admin</b> / <b>admin123</b></div>
+      <div class="login-hint" id="loginHint">Kredensial demo: <b>admin</b> / <b>admin123</b></div>
+      <div class="login-secure">🔒 Password di-hash (PBKDF2-SHA256), percobaan login dibatasi 5×/15 menit, sesi berakhir otomatis.</div>
       <button type="button" class="text-link" style="background:none;border:0;margin-top:14px;display:block;width:100%;text-align:center" onclick="closeAdminEntry()">← Kembali ke website</button>
     </form>
+  </div>
+
+  <!-- Privacy policy -->
+  <div class="overlay" id="privacyOverlay" onclick="if(event.target===this)closePrivacy()">
+    <div class="modal" style="max-width:620px" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+      <div class="modal-head"><h3 id="privacyTitle">Kebijakan Privasi &amp; Keamanan Data</h3><button class="close-btn" onclick="closePrivacy()" aria-label="Tutup">×</button></div>
+      <div class="modal-body" style="font-size:12px;line-height:1.85;color:var(--muted)">
+        <p style="margin-top:0"><b style="color:#f4f4f6">Data apa yang dikumpulkan.</b> Wishlist, keranjang, dan data katalog hanya disimpan di <i>localStorage</i> perangkat Anda. Sesi admin disimpan di <i>sessionStorage</i> dan berakhir saat tab ditutup atau setelah batas waktu sesi.</p>
+        <p><b style="color:#f4f4f6">Yang tidak kami lakukan.</b> Tidak ada cookie pelacak, tidak ada analytics, tidak ada pengiriman data ke server kami, dan tidak ada pemrosesan pembayaran. Prototype ini tidak memiliki backend.</p>
+        <p><b style="color:#f4f4f6">Pihak ketiga.</b> Halaman memuat library Three.js dari <code>cdn.jsdelivr.net</code>, model 3D dari <code>sketchfab.com</code>, serta foto produk dari situs toko lain. Penyedia tersebut dapat melihat alamat IP dan user-agent browser Anda sesuai kebijakan privasi masing-masing.</p>
+        <p><b style="color:#f4f4f6">Log &amp; penyimpanan.</b> Log aktivitas dan log keamanan disimpan maksimal 90 hari, lalu dihapus otomatis. Snapshot cadangan data disimpan maksimal 3 versi terakhir di perangkat ini.</p>
+        <p><b style="color:#f4f4f6">Hak Anda.</b> Anda dapat mengunduh seluruh data (Admin → Settings → Ekspor JSON) dan menghapus semuanya kapan saja (Admin → Keamanan → Hapus data lokal, atau hapus data situs di browser).</p>
+        <p style="margin-bottom:0"><b style="color:#f4f4f6">Kontak.</b> Pertanyaan privasi: <span id="privacyEmail">hello@diecasthub.id</span>. Kebijakan ini dapat berubah; versi terbaru selalu tampil di halaman ini.</p>
+      </div>
+    </div>
   </div>
 
   <!-- Admin dashboard -->
@@ -531,6 +564,7 @@
       <button class="side-link" data-page="banners"><span class="ico">▧</span>Banner Management</button>
       <button class="side-link" data-page="reports"><span class="ico">⚑</span>Report Management</button>
       <div class="side-group-label">System</div>
+      <button class="side-link" data-page="security"><span class="ico">🛡</span>Keamanan</button>
       <button class="side-link" data-page="settings"><span class="ico">⚙</span>Settings</button>
       <button class="side-link" data-page="profile"><span class="ico">◎</span>Admin Profile</button>
       <button class="side-link" onclick="adminLogout()"><span class="ico">⏻</span>Logout</button>
@@ -753,7 +787,15 @@ const DH_SEED={
     currency:'IDR',
     maintenance:false,
     adminUsername:'admin',
-    adminPassword:'admin123',
+    /* password disimpan sebagai hash PBKDF2-SHA256 (120.000 iterasi, salt acak) */
+    adminPasswordSalt:'QLfmeri3Ry/QbxLnwKCZHw==',
+    adminPasswordHash:'Umc/UArv5eIcKcYggEIzfdtwxqJXBMndQclU83pUEfM=',
+    adminPasswordIterations:120000,
+    passwordRotated:false,
+    mfaEnabled:false,
+    mfaSecret:'',
+    mfaRecovery:[],
+    sessionTimeoutMin:30,
     adminName:'Admin Diecast Hub',
     adminEmail:'admin@diecasthub.id'
   }
@@ -765,6 +807,34 @@ const SESSION_KEY='dh_admin_session';
 function readLS(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch(e){return fallback}}
 function uid(prefix){return prefix+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+/* Argumen string yang aman untuk atribut onclick (JSON di-escape HTML). */
+function jsArg(v){return esc(JSON.stringify(String(v==null?'':v)))}
+/* Validasi input terpusat (OWASP: validation & encoding). */
+function sanText(v,max){
+  return String(v==null?'':v)
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim()
+    .slice(0,max||300);
+}
+function sanMultiline(v,max){
+  return String(v==null?'':v)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g,'')
+    .replace(/\r\n?/g,'\n')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim()
+    .slice(0,max||4000);
+}
+function safeUrl(v){
+  const u=String(v==null?'':v).trim();
+  if(!u)return '';
+  if(/^data:image\/(png|jpe?g|webp|gif|avif);base64,[a-z0-9+/=\s]+$/i.test(u))return u.replace(/\s+/g,'');
+  if(/^https?:\/\//i.test(u))return u.slice(0,2000);
+  return '';
+}
+function safeUrlList(v){
+  return String(v==null?'':v).split(/[\n,]+/).map(s=>safeUrl(s)).filter(Boolean);
+}
 function rupiah(n){return 'Rp'+Number(n||0).toLocaleString('id-ID')}
 function formatDate(d){if(!d)return '—';const dt=new Date(d);if(isNaN(dt))return esc(d);return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}
 function showToast(message,type){
@@ -816,6 +886,7 @@ let currentProductId=null;
 function saveDB(){
   try{localStorage.setItem(DB_KEY,JSON.stringify(DB))}
   catch(e){showToast('Penyimpanan lokal penuh. Hapus beberapa data atau gambar besar.','err')}
+  maybeSnapshot(false);
   refreshPublicViews();
 }
 function refreshPublicViews(){
@@ -824,8 +895,181 @@ function refreshPublicViews(){
   populateCatalogFilters();
 }
 function logActivity(text){
+  const cut=Date.now()-SEC.retentionDays*864e5;
+  DB.activity=DB.activity.filter(a=>!a.date||new Date(a.date).getTime()>=cut);
   DB.activity.unshift({id:uid('ac'),text,date:new Date().toISOString()});
   DB.activity=DB.activity.slice(0,80);
+}
+
+/* ==========================================================================
+   SECURITY LAYER
+   Kontrol: hashing password PBKDF2, rate limit login, sesi berbatas waktu,
+   MFA TOTP, sanitasi input, log keamanan 90 hari, snapshot cadangan, HTTPS.
+   Aplikasi ini statis (tanpa backend), jadi kontrol melindungi data di
+   perangkat pengguna + menutup jalur XSS/brute force di sisi klien.
+   ========================================================================== */
+const SEC={
+  keyGuard:'dh_auth_guard',
+  keyLog:'dh_security_log',
+  keySnap:'dh_snapshots',
+  maxAttempts:5,
+  windowMs:15*60*1000,
+  lockMs:15*60*1000,
+  iterations:120000,
+  defaultSessionMin:30,
+  absoluteSessionMs:8*60*60*1000,
+  retentionDays:90
+};
+function isProdEnv(){
+  const h=location.hostname;
+  return location.protocol==='https:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(h)&&!/\.style\.dev$/.test(h);
+}
+const b64ToBytes=b64=>{const bin=atob(String(b64||''));const out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out};
+const bytesToB64=bytes=>{const a=new Uint8Array(bytes);let s='';for(let i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)};
+function randBytes(n){const a=new Uint8Array(n);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);else for(let i=0;i<n;i++)a[i]=Math.floor(Math.random()*256);return a}
+async function pbkdf2Hash(password,saltB64,iterations){
+  const enc=new TextEncoder();
+  const key=await crypto.subtle.importKey('raw',enc.encode(String(password)),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:b64ToBytes(saltB64),iterations:iterations||SEC.iterations,hash:'SHA-256'},key,256);
+  return bytesToB64(new Uint8Array(bits));
+}
+async function sha256Hex(text){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(text)));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function timingSafeEqual(a,b){
+  const x=String(a==null?'':a),y=String(b==null?'':b);let diff=x.length^y.length;
+  for(let i=0;i<Math.max(x.length,y.length);i++)diff|=(x.charCodeAt(i)||0)^(y.charCodeAt(i)||0);
+  return diff===0;
+}
+async function setAdminPassword(password,markRotated){
+  const salt=bytesToB64(randBytes(16));
+  const hash=await pbkdf2Hash(password,salt,SEC.iterations);
+  DB.settings.adminPasswordSalt=salt;
+  DB.settings.adminPasswordHash=hash;
+  DB.settings.adminPasswordIterations=SEC.iterations;
+  delete DB.settings.adminPassword;
+  DB.settings.passwordChangedAt=new Date().toISOString();
+  DB.settings.passwordRotated=markRotated!==false;
+  return true;
+}
+async function verifyAdminPassword(password){
+  const s=DB.settings||{};
+  if(s.adminPasswordHash&&s.adminPasswordSalt){
+    const hash=await pbkdf2Hash(password,s.adminPasswordSalt,s.adminPasswordIterations||SEC.iterations);
+    return timingSafeEqual(hash,s.adminPasswordHash);
+  }
+  if(s.adminPassword){
+    const ok=timingSafeEqual(password,s.adminPassword);
+    if(ok){const plain=String(s.adminPassword);delete DB.settings.adminPassword;await setAdminPassword(plain,plain!=='admin123');saveDB()}
+    return ok;
+  }
+  return false;
+}
+function passwordIssues(pw){
+  const out=[];const v=String(pw||'');
+  if(v.length<8)out.push('minimal 8 karakter');
+  if(!/[A-Za-z]/.test(v))out.push('mengandung huruf');
+  if(!/\d/.test(v))out.push('mengandung angka');
+  if(/^(password|admin123|12345678|qwerty)/i.test(v))out.push('bukan password yang mudah ditebak');
+  return out;
+}
+/* --- rate limit login --- */
+function readGuard(){const g=readLS(SEC.keyGuard,null);return g&&typeof g==='object'?{fails:Array.isArray(g.fails)?g.fails:[],lockUntil:Number(g.lockUntil)||0}:{fails:[],lockUntil:0}}
+function writeGuard(g){try{localStorage.setItem(SEC.keyGuard,JSON.stringify(g))}catch(_){}}
+function loginLockRemaining(){return Math.max(0,(readGuard().lockUntil||0)-Date.now())}
+function registerLoginFailure(){
+  const now=Date.now();const g=readGuard();
+  g.fails=(g.fails||[]).filter(t=>now-t<SEC.windowMs);
+  g.fails.push(now);
+  const count=g.fails.length;
+  let locked=false;
+  if(count>=SEC.maxAttempts){g.lockUntil=now+SEC.lockMs;g.fails=[];locked=true}
+  writeGuard(g);
+  return {locked,remaining:Math.max(0,(g.lockUntil||0)-now),count};
+}
+function clearLoginFailures(){writeGuard({fails:[],lockUntil:0})}
+/* --- sesi admin --- */
+function sessionLimitMs(){return (Number(DB.settings.sessionTimeoutMin)||SEC.defaultSessionMin)*60000}
+function createAdminSession(user){
+  const now=Date.now();
+  sessionStorage.setItem(SESSION_KEY,JSON.stringify({
+    user,at:new Date(now).toISOString(),issued:now,last:now,
+    exp:now+SEC.absoluteSessionMs,token:bytesToB64(randBytes(16))
+  }));
+}
+/* --- log keamanan (retensi 90 hari) --- */
+function securityLog(event,detail,level){
+  const now=Date.now();const cut=now-SEC.retentionDays*864e5;
+  const list=(readLS(SEC.keyLog,[])||[]).filter(e=>e&&new Date(e.date).getTime()>=cut);
+  list.unshift({id:uid('sl'),event,detail:detail||'',level:level||'info',date:new Date(now).toISOString()});
+  try{localStorage.setItem(SEC.keyLog,JSON.stringify(list.slice(0,300)))}catch(_){}
+}
+function pruneSecurityLogs(){
+  const cut=Date.now()-SEC.retentionDays*864e5;
+  const list=(readLS(SEC.keyLog,[])||[]).filter(e=>e&&new Date(e.date).getTime()>=cut);
+  try{localStorage.setItem(SEC.keyLog,JSON.stringify(list))}catch(_){}
+}
+/* --- MFA TOTP (RFC 6238, SHA-1, 6 digit, 30 detik) --- */
+const B32='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function base32Encode(bytes){
+  let bits=0,value=0,out='';const a=new Uint8Array(bytes);
+  for(let i=0;i<a.length;i++){value=(value<<8)|a[i];bits+=8;while(bits>=5){out+=B32[(value>>>(bits-5))&31];bits-=5}}
+  if(bits>0)out+=B32[(value<<(5-bits))&31];
+  return out;
+}
+function base32Decode(str){
+  const clean=String(str||'').toUpperCase().replace(/[^A-Z2-7]/g,'');
+  let bits=0,value=0;const out=[];
+  for(const ch of clean){const idx=B32.indexOf(ch);if(idx<0)continue;value=(value<<5)|idx;bits+=5;if(bits>=8){out.push((value>>>(bits-8))&255);bits-=8}}
+  return new Uint8Array(out);
+}
+async function hmacSha1(keyBytes,msgBytes){
+  const key=await crypto.subtle.importKey('raw',keyBytes,{name:'HMAC',hash:'SHA-1'},false,['sign']);
+  return new Uint8Array(await crypto.subtle.sign('HMAC',key,msgBytes));
+}
+async function totpCode(secret,atMs){
+  const counter=Math.floor((atMs||Date.now())/30000);
+  const buf=new ArrayBuffer(8);const dv=new DataView(buf);
+  dv.setUint32(0,Math.floor(counter/4294967296));dv.setUint32(4,counter>>>0);
+  const mac=await hmacSha1(base32Decode(secret),new Uint8Array(buf));
+  const off=mac[mac.length-1]&0x0f;
+  const bin=((mac[off]&0x7f)<<24)|(mac[off+1]<<16)|(mac[off+2]<<8)|mac[off+3];
+  return String(bin%1000000).padStart(6,'0');
+}
+async function verifyTotp(secret,code){
+  const c=String(code||'').replace(/[\s-]/g,'');
+  if(!/^\d{6}$/.test(c)||!secret)return false;
+  for(const d of [-1,0,1]){
+    if(timingSafeEqual(await totpCode(secret,Date.now()+d*30000),c))return true;
+  }
+  return false;
+}
+function genRecoveryCodes(n){
+  const out=[];
+  for(let i=0;i<(n||8);i++){const s=base32Encode(randBytes(5)).slice(0,8);out.push(s.slice(0,4)+'-'+s.slice(4))}
+  return out;
+}
+async function hashRecoveryCodes(codes){const out=[];for(const c of codes)out.push(await sha256Hex(String(c).replace(/-/g,'').toUpperCase()));return out}
+async function consumeRecoveryCode(code){
+  const list=(DB.settings.mfaRecovery||[]).slice();
+  if(!String(code||'').trim())return false;
+  const h=await sha256Hex(String(code).replace(/[\s-]/g,'').toUpperCase());
+  const i=list.indexOf(h);
+  if(i<0)return false;
+  list.splice(i,1);DB.settings.mfaRecovery=list;saveDB();
+  securityLog('mfa_recovery','Satu kode pemulihan dipakai.','warn');
+  return true;
+}
+/* --- snapshot cadangan lokal --- */
+function maybeSnapshot(force){
+  try{
+    const list=readLS(SEC.keySnap,[])||[];
+    const last=list[0]?new Date(list[0].at).getTime():0;
+    if(!force&&Date.now()-last<30*60000)return;
+    list.unshift({at:new Date().toISOString(),data:JSON.stringify(DB)});
+    localStorage.setItem(SEC.keySnap,JSON.stringify(list.slice(0,3)));
+  }catch(_){}
 }
 
 /* ============================== CATALOG ============================== */
@@ -1027,13 +1271,13 @@ function saveProduct(e){
   const idRaw=document.getElementById('editId').value;
   const id=idRaw?Number(idRaw):Date.now();
   const old=DB.products.find(p=>p.id===id);
-  const image=document.getElementById('formImage').value.trim()||(old&&old.image)||imageSet.porsche;
+  const image=safeUrl(document.getElementById('formImage').value)||(old&&old.image)||imageSet.porsche;
   const p={
     id,
-    name:document.getElementById('formName').value.trim(),
+    name:sanText(document.getElementById('formName').value,120),
     brand:document.getElementById('formBrand').value,
     category:(old&&old.category)||'Sports Car',
-    model:(old&&old.model)||document.getElementById('formName').value.trim(),
+    model:(old&&old.model)||sanText(document.getElementById('formName').value,120),
     year:(old&&old.year)||new Date().getFullYear(),
     scale:document.getElementById('formScale').value,
     series:(old&&old.series)||'Diecast Collection',
@@ -1048,7 +1292,7 @@ function saveProduct(e){
     stock:Number(document.getElementById('formStock').value)||0,
     image,
     gallery:(old&&old.gallery&&old.gallery.length)?old.gallery:[image],
-    description:document.getElementById('formDescription').value.trim(),
+    description:sanMultiline(document.getElementById('formDescription').value,1500),
     sellerStore:'Toko Demo Diecast',
     sellerId:'sl1',
     published:true,
@@ -1395,7 +1639,7 @@ function resolveConfirm(value){
 function populateBrandShowcase(){
   const wrap=document.getElementById('brandShowcase');
   if(!wrap)return;
-  wrap.innerHTML=DB.brands.filter(b=>b.status!=='inactive').map(b=>`<button class="brand-card" onclick="setBrand('${esc(b.name)}')"><span class="brand-symbol" style="color:${esc(b.color||'#f4f4f6')}">${esc(b.symbol||b.name.toUpperCase())}</span><span>${esc(b.name)}</span></button>`).join('');
+  wrap.innerHTML=DB.brands.filter(b=>b.status!=='inactive').map(b=>`<button class="brand-card" onclick="setBrand(${jsArg(b.name)})"><span class="brand-symbol" style="color:${esc(/^#[0-9a-f]{3,8}$/i.test(b.color||'')?b.color:'#f4f4f6')}">${esc(b.symbol||String(b.name).toUpperCase())}</span><span>${esc(b.name)}</span></button>`).join('');
 }
 
 /* ============================== INIT PUBLIC ============================== */
@@ -1439,6 +1683,7 @@ const ADMIN_PAGE_META={
   reviews:{title:'Review Management',search:'Cari produk, pembeli, atau isi ulasan…'},
   banners:{title:'Banner Management',search:'Cari judul banner…'},
   reports:{title:'Report Management',search:'Cari laporan, target, atau pelapor…'},
+  security:{title:'Keamanan & Kepatuhan',search:'Cari di log keamanan…'},
   settings:{title:'Settings',search:'Pengaturan aplikasi'},
   profile:{title:'Admin Profile',search:'Profil administrator'}
 };
@@ -1458,7 +1703,13 @@ function boolLabel(v){return v===true||v==='true'?'Ya':v===false||v==='false'?'T
 function isAdminAuthed(){
   try{
     const s=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');
-    return !!(s&&s.user&&s.at);
+    if(!s||!s.user||!s.at)return false;
+    const now=Date.now();
+    if(s.exp&&now>s.exp){sessionStorage.removeItem(SESSION_KEY);return false}
+    if(s.last&&now-s.last>sessionLimitMs()){sessionStorage.removeItem(SESSION_KEY);securityLog('session_timeout','Sesi berakhir karena tidak ada aktivitas.','warn');return false}
+    s.last=now;
+    sessionStorage.setItem(SESSION_KEY,JSON.stringify(s));
+    return true;
   }catch(e){return false}
 }
 function openAdminEntry(){
@@ -1470,6 +1721,24 @@ function showAdminLogin(){
   document.getElementById('adminLoginPage').classList.remove('hidden');
   document.getElementById('loginError').classList.remove('show');
   document.getElementById('adminPassword').value='';
+  const mfaField=document.getElementById('adminMfaField');
+  if(mfaField)mfaField.classList.toggle('hidden',!(DB.settings.mfaEnabled&&DB.settings.mfaSecret));
+  const hint=document.getElementById('loginHint');
+  if(hint){
+    if(isProdEnv()&&DB.settings.passwordRotated){
+      hint.className='login-hint';
+      hint.innerHTML='Login dibatasi: maksimal 5 percobaan / 15 menit. Lupa password? Reset data lokal lewat konsol browser.';
+    }else if(isProdEnv()){
+      hint.className='login-hint warn';
+      hint.innerHTML='⚠ Situs ini memakai kredensial demo. Ganti password admin segera setelah login pertama.';
+    }else{
+      hint.className='login-hint';
+      hint.innerHTML='Kredensial demo: <b>admin</b> / <b>admin123</b> (lingkungan pengembangan).';
+    }
+  }
+  const lock=loginLockRemaining();
+  const err=document.getElementById('loginError');
+  if(lock>0&&err){err.textContent=`Login terkunci sementara. Coba lagi dalam ${Math.ceil(lock/60000)} menit.`;err.classList.add('show')}
   setTimeout(()=>{const el=document.getElementById('adminUsername');if(el&&!el.value)el.focus()},60);
 }
 function closeAdminEntry(){
@@ -1478,31 +1747,135 @@ function closeAdminEntry(){
   document.getElementById('adminLoginPage').classList.add('hidden');
   document.getElementById('adminPage').classList.add('hidden');
 }
-function attemptAdminLogin(e){
+async function attemptAdminLogin(e){
   e.preventDefault();
-  const user=document.getElementById('adminUsername').value.trim();
-  const pass=document.getElementById('adminPassword').value;
+  const userEl=document.getElementById('adminUsername');
+  const passEl=document.getElementById('adminPassword');
+  const mfaEl=document.getElementById('adminMfaCode');
   const err=document.getElementById('loginError');
-  if(user===DB.settings.adminUsername&&pass===DB.settings.adminPassword){
-    sessionStorage.setItem(SESSION_KEY,JSON.stringify({user,at:new Date().toISOString()}));
+  const btn=e.target.querySelector('button[type="submit"]');
+  const user=sanText(userEl.value,64);
+  const pass=String(passEl.value||'');
+  const mfaCode=mfaEl?mfaEl.value:'';
+
+  const lock=loginLockRemaining();
+  if(lock>0){
+    err.textContent=`Terlalu banyak percobaan gagal. Coba lagi dalam ${Math.ceil(lock/60000)} menit.`;
+    err.classList.add('show');
+    securityLog('login_blocked','Percobaan login saat akun terkunci.','warn');
+    return;
+  }
+  if(btn){btn.disabled=true;btn.textContent='Memeriksa…'}
+  try{
+    const userOk=timingSafeEqual(user,DB.settings.adminUsername||'');
+    const passOk=await verifyAdminPassword(pass);
+    if(!(userOk&&passOk)){
+      const r=registerLoginFailure();
+      securityLog('login_failed',`Login gagal untuk "${user||'-'}" (${r.count}/${SEC.maxAttempts}).`,'warn');
+      err.textContent=r.locked
+        ? `Akun terkunci ${Math.ceil(r.remaining/60000)} menit karena ${SEC.maxAttempts} percobaan gagal.`
+        : `Username atau password salah. Sisa ${Math.max(0,SEC.maxAttempts-r.count)} percobaan sebelum terkunci.`;
+      err.classList.add('show');
+      passEl.value='';
+      showToast('Login gagal.','err');
+      return;
+    }
+    if(DB.settings.mfaEnabled&&DB.settings.mfaSecret){
+      const code=String(mfaCode||'').replace(/\s/g,'');
+      let ok=false;
+      if(/^\d{6}$/.test(code))ok=await verifyTotp(DB.settings.mfaSecret,code);
+      else if(code)ok=await consumeRecoveryCode(code);
+      if(!ok){
+        registerLoginFailure();
+        securityLog('mfa_failed',`Kode verifikasi 2 langkah salah untuk "${user}".`,'warn');
+        err.textContent='Kode verifikasi 2 langkah salah atau sudah kedaluwarsa.';
+        err.classList.add('show');
+        if(mfaEl)mfaEl.value='';
+        showToast('Verifikasi 2 langkah gagal.','err');
+        return;
+      }
+      securityLog('mfa_ok','Verifikasi 2 langkah berhasil.');
+    }
+    clearLoginFailures();
+    createAdminSession(user);
+    securityLog('login_ok',`Administrator "${user}" masuk dari ${location.host}.`);
     err.classList.remove('show');
-    document.getElementById('adminPassword').value='';
-    logActivity('Administrator masuk ke dashboard.');
+    passEl.value='';if(mfaEl)mfaEl.value='';
+    logActivity('Administrator masuk ke dashboard (sesi terverifikasi).');
     try{localStorage.setItem(DB_KEY,JSON.stringify(DB))}catch(_){}
+    maybeSnapshot(true);
     openAdminDashboard();
     showToast('Login berhasil. Selamat datang, '+DB.settings.adminName+'.','ok');
-  }else{
-    err.textContent='Username atau password salah. Gunakan kredensial demo admin / admin123.';
+    if(isProdEnv()&&!DB.settings.passwordRotated)openForcedPasswordChange();
+  }catch(ex){
+    err.textContent='Verifikasi gagal diproses. Muat ulang halaman lalu coba lagi.';
     err.classList.add('show');
-    showToast('Login gagal: kredensial tidak sesuai.','err');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Masuk →'}
   }
 }
 function adminLogout(){
+  securityLog('logout','Administrator keluar dari dashboard.');
   sessionStorage.removeItem(SESSION_KEY);
   document.getElementById('adminPage').classList.add('hidden');
   document.getElementById('adminLoginPage').classList.remove('hidden');
   document.getElementById('loginError').classList.remove('show');
   showToast('Anda telah keluar dari dashboard.','ok');
+}
+/* --- wajib ganti password default di production --- */
+let forcePwActive=false;
+function openForcedPasswordChange(){
+  forcePwActive=true;
+  document.getElementById('adminModalTitle').textContent='Wajib ganti password';
+  document.getElementById('adminModalBody').innerHTML=`
+    <div class="notice" style="margin-bottom:14px">Situs ini berjalan di production dan masih memakai kredensial demo. Buat password baru sebelum melanjutkan — dashboard terkunci sampai password diganti.</div>
+    <form onsubmit="savePassword(event)">
+      <div class="field"><label>Password saat ini</label><input name="current" type="password" required value="admin123" /></div>
+      <div class="field"><label>Password baru (min. 8 karakter, huruf + angka)</label><input name="next" type="password" minlength="8" required /></div>
+      <div class="field"><label>Konfirmasi password baru</label><input name="confirm" type="password" minlength="8" required /></div>
+      <div class="form-actions"><button class="btn" type="submit">Simpan password baru</button></div>
+    </form>`;
+  document.getElementById('adminModalOverlay').classList.add('show');
+}
+function openPrivacy(){
+  const el=document.getElementById('privacyEmail');
+  if(el&&DB.settings.supportEmail)el.textContent=DB.settings.supportEmail;
+  document.getElementById('privacyOverlay').classList.add('show');
+}
+function closePrivacy(){document.getElementById('privacyOverlay').classList.remove('show')}
+/* --- boot keamanan --- */
+function ensureSecuritySettings(){
+  const s=DB.settings;
+  if(s.sessionTimeoutMin==null)s.sessionTimeoutMin=SEC.defaultSessionMin;
+  if(!Array.isArray(s.mfaRecovery))s.mfaRecovery=[];
+  if(s.mfaEnabled==null)s.mfaEnabled=false;
+  if(s.passwordRotated==null)s.passwordRotated=false;
+}
+async function ensurePasswordHash(){
+  const s=DB.settings;
+  if(s.adminPasswordHash&&s.adminPasswordSalt){
+    if('adminPassword' in s){delete s.adminPassword;saveDB()}
+    return;
+  }
+  if(s.adminPassword){
+    const plain=String(s.adminPassword);
+    delete s.adminPassword;
+    await setAdminPassword(plain,plain!=='admin123');
+    saveDB();securityLog('password_migrated','Password plaintext dimigrasikan ke hash PBKDF2.');
+  }
+}
+async function initSecurity(){
+  const host=location.hostname;
+  const local=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(host)||/\.style\.dev$/.test(host);
+  if(location.protocol==='http:'&&!local){
+    location.replace('https://'+location.host+location.pathname+location.search);
+    return;
+  }
+  ensureSecuritySettings();
+  await ensurePasswordHash();
+  pruneSecurityLogs();
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&isAdminAuthed()){}});
+  document.addEventListener('pointerdown',()=>{if(!document.getElementById('adminPage').classList.contains('hidden'))sessionStorage.getItem(SESSION_KEY)&&isAdminAuthed()},{passive:true});
 }
 function openAdminDashboard(){
   document.getElementById('adminLoginPage').classList.add('hidden');
@@ -1534,7 +1907,7 @@ function adminShow(page){
 function adminSetSearch(value){
   adminState.search=value||'';
   adminState.pageNo=1;
-  if(!['dashboard','settings','profile'].includes(adminState.page))renderAdminPage();
+  if(!['dashboard','settings','profile','security'].includes(adminState.page))renderAdminPage();
 }
 function adminFilterChange(key,value){
   adminState.filters[key]=value;
@@ -1550,7 +1923,7 @@ function renderAdminPage(){
     sellers:()=>renderListPage('sellers'),stores:()=>renderListPage('stores'),orders:()=>renderListPage('orders'),
     payments:()=>renderListPage('payments'),commissions:()=>renderListPage('commissions'),
     reviews:()=>renderListPage('reviews'),banners:()=>renderListPage('banners'),reports:()=>renderListPage('reports'),
-    settings:renderSettings,profile:renderProfile
+    security:renderSecurity,settings:renderSettings,profile:renderProfile
   };
   const fn=map[adminState.page]||renderDashboard;
   fn();
@@ -2204,9 +2577,20 @@ function saveRecord(e){
     if(f.required&&(v===''||v==null)){showToast(`${f.label} wajib diisi.`,'err');el.focus();return}
     out[f.key]=v;
   }
+  /* sanitasi & validasi input terpusat (OWASP Top 10: injection/XSS) */
+  for(const f of cfg.fields){
+    if(f.type==='file'||f.type==='number')continue;
+    if(typeof out[f.key]!=='string')continue;
+    const k=f.key;
+    if(/gallery/i.test(k)){out[k]=safeUrlList(out[k]).join('\n');continue}
+    if(/url|image|photo|avatar|banner|logo|link/i.test(k)){out[k]=safeUrl(out[k]);continue}
+    if(/desc|note|reason|review|text|address|message|content/i.test(k)){out[k]=sanMultiline(out[k],4000);continue}
+    out[k]=sanText(out[k],300);
+  }
+  ['price','stock','year','qty','amount','commission','rating'].forEach(k=>{if(k in out&&typeof out[k]==='number'&&out[k]<0)out[k]=0});
   (cfg.booleans||[]).forEach(k=>{if(k in out)out[k]=out[k]==='true'||out[k]===true});
   if(key==='products'){
-    out.gallery=String(out.gallery||'').split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);
+    out.gallery=String(out.gallery||'').split(/\n+/).flatMap(line=>/^data:/i.test(line.trim())?[line.trim()]:line.split(',')).map(s=>s.trim()).filter(Boolean).map(s=>safeUrl(s)).filter(Boolean);
     if(!out.gallery.length&&out.image)out.gallery=[out.image];
   }
   if(key==='products'&&(!out.name||!out.brand)){showToast('Nama dan brand produk wajib diisi.','err');return}
@@ -2233,6 +2617,7 @@ function saveRecord(e){
   showToast(`${cfg.singular} berhasil ${existing?'diperbarui':'ditambahkan'}.`,'ok');
 }
 function closeAdminModal(){
+  if(forcePwActive)return;
   document.getElementById('adminModalOverlay').classList.remove('show');
   document.getElementById('adminModalBody').innerHTML='';
   if(adminPreviewActive){
@@ -2415,6 +2800,160 @@ function saveSettings(e){
   logActivity('Pengaturan aplikasi diperbarui.');
   saveDB();showToast('Pengaturan disimpan.','ok');renderSettings();
 }
+/* ============================== SECURITY PAGE ============================== */
+let secState={pendingSecret:'',pendingRecovery:[],lastRecovery:[]};
+function secRows(){
+  const s=DB.settings;
+  const lock=loginLockRemaining();
+  const mfaOn=!!(s.mfaEnabled&&s.mfaSecret);
+  return [
+    {lvl:location.protocol==='https:'?'ok':'warn',t:'HTTPS / TLS',d:location.protocol==='https:'?'Koneksi terenkripsi (HSTS + header keamanan aktif setelah deploy Vercel).':'Belum HTTPS. Di produksi gunakan HTTPS (Vercel). http hanya untuk pengembangan lokal.'},
+    {lvl:(s.adminPasswordHash&&s.adminPasswordSalt)?'ok':'off',t:'Password admin di-hash',d:'PBKDF2-SHA256 · '+(s.adminPasswordIterations||SEC.iterations).toLocaleString('id-ID')+' iterasi · salt acak 128-bit. Plaintext tidak pernah disimpan.'},
+    {lvl:lock>0?'warn':'ok',t:'Rate limiting login',d:'Maksimal '+SEC.maxAttempts+' percobaan per 15 menit, lalu terkunci 15 menit.'+(lock>0?' Sedang terkunci '+Math.ceil(lock/60000)+' menit.':'')},
+    {lvl:'ok',t:'Sesi berbatas waktu',d:'Idle '+(s.sessionTimeoutMin||SEC.defaultSessionMin)+' menit · maksimal 8 jam · token sesi acak setiap login.'},
+    {lvl:mfaOn?'ok':'warn',t:'MFA (TOTP) admin',d:mfaOn?'Aktif — login membutuhkan kode 6 digit dari aplikasi authenticator.':'Belum aktif. Disarankan untuk akun admin.'},
+    {lvl:s.passwordRotated?'ok':'warn',t:'Password default',d:s.passwordRotated?'Sudah diganti'+(s.passwordChangedAt?' pada '+formatDate(s.passwordChangedAt):'')+'.':'Masih memakai kredensial demo admin123. Ganti sekarang.'},
+    {lvl:'ok',t:'Content-Security-Policy',d:"default-src 'self'; script hanya origin sendiri + cdn.jsdelivr.net; frame hanya sketchfab.com; object-src 'none'."},
+    {lvl:'ok',t:'Validasi input & anti-XSS',d:'Semua nilai di-escape saat dirender, argumen handler memakai JSON-escape, URL dibatasi http/https/data:image, panjang input dibatasi.'},
+    {lvl:'ok',t:'Kontrol akses terpisah',d:'Dashboard butuh sesi terverifikasi; login demo hanya ditampilkan di lingkungan pengembangan; production memaksa ganti password.'},
+    {lvl:'ok',t:'Log & retensi 90 hari',d:DB.activity.length+' aktivitas · '+(readLS(SEC.keyLog,[])||[]).length+' peristiwa keamanan (login, MFA, password, snapshot).'},
+    {lvl:'ok',t:'Cadangan data',d:'Snapshot otomatis tiap 30 menit (maks 3 versi) + ekspor JSON manual.'}
+  ];
+}
+function renderSecurity(){
+  const s=DB.settings;
+  const mfaOn=!!(s.mfaEnabled&&s.mfaSecret);
+  const rows=secRows().map(r=>`<div class="sec-row"><span class="sec-dot ${r.lvl}"></span><div><b>${esc(r.t)} <span class="pill-mini ${r.lvl==='ok'?'ok':'off'}">${r.lvl==='ok'?'AKTIF':r.lvl==='warn'?'PERHATIAN':'NONAKTIF'}</span></b><span>${esc(r.d)}</span></div></div>`).join('');
+  const snaps=(readLS(SEC.keySnap,[])||[]).map((x,i)=>`<div class="sec-row"><span class="sec-dot ok"></span><div><b>Snapshot ${i+1}</b><span>${esc(new Date(x.at).toLocaleString('id-ID'))} · ${Math.round(String(x.data||'').length/1024)} KB</span><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><button class="mini-action" onclick="restoreSnapshot(${jsArg(x.at)})">Pulihkan</button><button class="mini-action" onclick="downloadSnapshot(${jsArg(x.at)})">Unduh</button></div></div></div>`).join('');
+  const logs=(readLS(SEC.keyLog,[])||[]).slice(0,12).map(e=>`<tr><td>${esc(new Date(e.date).toLocaleString('id-ID'))}</td><td>${esc(e.event)}</td><td>${esc(e.detail)}</td></tr>`).join('');
+  const recovery=(secState.lastRecovery.length?secState.lastRecovery:[]).map(c=>`<span class="code-box" style="display:inline-block;margin:4px 4px 0 0;padding:5px 9px">${esc(c)}</span>`).join('');
+  let mfaPanel='';
+  if(mfaOn){
+    mfaPanel=`<p class="inline-note" style="margin-bottom:10px">MFA aktif. Kode pemulihan tersisa <b>${(s.mfaRecovery||[]).length}</b> dari 8.</p>
+      <form onsubmit="disableMfa(event)"><div class="field"><label>Nonaktifkan MFA — masukkan password</label><input name="mfaPass" id="secMfaPassword" type="password" required /></div><div class="form-actions"><button class="btn secondary small" type="submit">Nonaktifkan MFA</button></div></form>
+      <button class="mini-action" onclick="regenerateRecovery()">Buat ulang 8 kode pemulihan</button>`;
+  }else if(secState.pendingSecret){
+    const label=encodeURIComponent('Diecast Hub:'+(s.adminUsername||'admin'));
+    const uri=`otpauth://totp/${label}?secret=${secState.pendingSecret}&issuer=Diecast%20Hub&algorithm=SHA1&digits=6&period=30`;
+    mfaPanel=`<p class="inline-note">1. Tambahkan akun di aplikasi authenticator (Google Authenticator, Authy, 1Password) memakai secret di bawah.<br>2. Masukkan kode 6 digit untuk mengaktifkan.</p>
+      <div class="code-box">${esc(secState.pendingSecret)}</div>
+      <div class="inline-note" style="word-break:break-all">${esc(uri)}</div>
+      <div style="margin:10px 0"><b style="font-size:10px">Kode pemulihan (simpan sekarang, hanya tampil sekali):</b><div>${secState.pendingRecovery.map(c=>`<span class="code-box" style="display:inline-block;margin:4px 4px 0 0;padding:5px 9px">${esc(c)}</span>`).join('')}</div></div>
+      <form onsubmit="confirmMfaSetup(event)"><div class="field"><label>Kode 6 digit dari authenticator</label><input id="secMfaCode" inputmode="numeric" maxlength="6" required /></div><div class="form-actions"><button class="btn small" type="submit">Aktifkan MFA</button><button type="button" class="btn secondary small" onclick="cancelMfaSetup()">Batal</button></div></form>`;
+  }else{
+    mfaPanel=`<p class="inline-note" style="margin-bottom:10px">Aktifkan verifikasi 2 langkah berbasis TOTP. Setelah aktif, login admin membutuhkan password + kode 6 digit.</p><button class="btn small" onclick="startMfaSetup()">Aktifkan MFA</button>`;
+  }
+  document.getElementById('adminContent').innerHTML=`
+    <div class="page-head"><div><h1>Keamanan &amp; Kepatuhan</h1><p>Status kontrol keamanan minimum UMKM: autentikasi, HTTPS, validasi input, kontrol akses, log &amp; backup, privasi.</p></div><div><span class="pill-mini ${isProdEnv()?'ok':'off'}">${isProdEnv()?'PRODUCTION':'DEVELOPMENT'}</span></div></div>
+    <div class="grid-2">
+      <div class="panel"><div class="panel-head"><h3>Kontrol keamanan</h3><span class="pill-mini ok">${secRows().filter(r=>r.lvl==='ok').length}/${secRows().length} aktif</span></div>${rows}</div>
+      <div>
+        <div class="panel" style="margin-bottom:13px"><div class="panel-head"><h3>Autentikasi 2 langkah (MFA)</h3></div>${mfaPanel}
+          ${recovery?`<div style="margin-top:12px"><b style="font-size:10px">Kode pemulihan baru:</b><div>${recovery}</div></div>`:''}
+        </div>
+        <div class="panel" style="margin-bottom:13px"><div class="panel-head"><h3>Sesi &amp; rate limit</h3></div>
+          <form onsubmit="saveSessionPolicy(event)"><div class="field"><label>Batas idle sesi (menit)</label><input name="timeout" type="number" min="5" max="480" value="${Number(s.sessionTimeoutMin)||SEC.defaultSessionMin}" required /><div class="inline-note">Sesi admin berakhir otomatis setelah tidak ada aktivitas selama ini (maksimal 8 jam).</div></div>
+          <div class="form-actions"><button class="btn small" type="submit">Simpan</button><button type="button" class="btn secondary small" onclick="resetLoginLock()">Buka kunci login</button></div></form>
+        </div>
+        <div class="panel"><div class="panel-head"><h3>Cadangan data</h3></div>${snaps||'<p class="inline-note">Belum ada snapshot. Snapshot dibuat otomatis saat login dan setiap 30 menit sekali.</p>'}
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn secondary small" onclick="snapshotNow()">Buat snapshot</button><button class="btn secondary small" onclick="exportData()">Ekspor JSON</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel"><div class="panel-head"><h3>Log keamanan (90 hari)</h3><span class="pill-mini">${(readLS(SEC.keyLog,[])||[]).length} entri</span></div>
+      ${logs?`<div class="table-wrap"><table class="admin-table"><thead><tr><th>Waktu</th><th>Peristiwa</th><th>Detail</th></tr></thead><tbody>${logs}</tbody></table></div>`:'<p class="inline-note">Belum ada peristiwa keamanan tercatat.</p>'}
+    </div>
+    <div class="panel" style="margin-top:13px"><div class="panel-head"><h3>Privasi &amp; data</h3></div>
+      <p class="inline-note" style="margin-bottom:10px">Semua data prototype ini tersimpan di browser Anda. Tidak ada cookie pelacak dan tidak ada pengiriman data ke server.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary small" onclick="openPrivacy()">Baca kebijakan privasi</button><button class="btn small" style="background:#7a2b2b" onclick="clearLocalData()">Hapus semua data lokal</button></div>
+    </div>`;
+}
+function startMfaSetup(){
+  secState.pendingSecret=base32Encode(randBytes(20));
+  secState.pendingRecovery=genRecoveryCodes(8);
+  secState.lastRecovery=[];
+  renderSecurity();
+}
+function cancelMfaSetup(){secState.pendingSecret='';secState.pendingRecovery=[];renderSecurity()}
+async function confirmMfaSetup(e){
+  e.preventDefault();
+  const code=document.getElementById('secMfaCode')?.value||'';
+  if(!secState.pendingSecret){showToast('Mulai ulang pengaturan MFA.','err');return}
+  if(!await verifyTotp(secState.pendingSecret,code)){showToast('Kode salah. Pastikan jam perangkat akurat.','err');return}
+  DB.settings.mfaSecret=secState.pendingSecret;
+  DB.settings.mfaRecovery=await hashRecoveryCodes(secState.pendingRecovery);
+  DB.settings.mfaEnabled=true;
+  DB.settings.mfaEnabledAt=new Date().toISOString();
+  secState.lastRecovery=secState.pendingRecovery.slice();
+  secState.pendingSecret='';secState.pendingRecovery=[];
+  saveDB();
+  securityLog('mfa_enabled','MFA TOTP diaktifkan untuk akun admin.');
+  logActivity('MFA admin diaktifkan.');
+  showToast('MFA aktif. Simpan kode pemulihan.','ok');
+  renderSecurity();
+}
+async function disableMfa(e){
+  e.preventDefault();
+  const pass=document.getElementById('secMfaPassword')?.value||'';
+  if(!await verifyAdminPassword(pass)){showToast('Password salah.','err');return}
+  DB.settings.mfaEnabled=false;DB.settings.mfaSecret='';DB.settings.mfaRecovery=[];
+  secState.lastRecovery=[];
+  saveDB();securityLog('mfa_disabled','MFA dinonaktifkan.','warn');logActivity('MFA admin dinonaktifkan.');
+  showToast('MFA dinonaktifkan.','ok');renderSecurity();
+}
+function regenerateRecovery(){
+  const codes=genRecoveryCodes(8);
+  hashRecoveryCodes(codes).then(list=>{
+    DB.settings.mfaRecovery=list;saveDB();
+    secState.lastRecovery=codes;
+    securityLog('mfa_recovery_new','Kode pemulihan MFA dibuat ulang.','warn');
+    showToast('Kode pemulihan baru dibuat.','ok');renderSecurity();
+  });
+}
+function saveSessionPolicy(e){
+  e.preventDefault();
+  const v=Math.max(5,Math.min(480,Number(e.target.querySelector('[name="timeout"]').value)||SEC.defaultSessionMin));
+  DB.settings.sessionTimeoutMin=v;saveDB();
+  securityLog('policy','Batas idle sesi diubah menjadi '+v+' menit.');
+  showToast('Kebijakan sesi disimpan.','ok');renderSecurity();
+}
+function resetLoginLock(){
+  clearLoginFailures();securityLog('lock_reset','Kunci login dibuka manual oleh admin.','warn');
+  showToast('Kunci login dibuka.','ok');renderSecurity();
+}
+function snapshotNow(){maybeSnapshot(true);showToast('Snapshot dibuat.','ok');renderSecurity()}
+function restoreSnapshot(at){
+  const list=readLS(SEC.keySnap,[])||[];
+  const snap=list.find(x=>x.at===at);
+  if(!snap){showToast('Snapshot tidak ditemukan.','err');return}
+  if(!confirm('Pulihkan data dari snapshot '+new Date(at).toLocaleString('id-ID')+'? Data saat ini akan ditimpa.'))return;
+  try{
+    const data=JSON.parse(snap.data);
+    if(!data||!Array.isArray(data.products))throw new Error('bad');
+    localStorage.setItem(DB_KEY,JSON.stringify(data));
+    securityLog('restore_snapshot','Data dipulihkan dari snapshot '+at,'warn');
+    showToast('Snapshot dipulihkan. Memuat ulang…','ok');
+    setTimeout(()=>location.reload(),700);
+  }catch(err){showToast('Snapshot rusak, tidak dapat dipulihkan.','err')}
+}
+function downloadSnapshot(at){
+  const list=readLS(SEC.keySnap,[])||[];
+  const snap=list.find(x=>x.at===at);
+  if(!snap){showToast('Snapshot tidak ditemukan.','err');return}
+  const blob=new Blob([snap.data],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='diecast-hub-snapshot-'+String(at).slice(0,19).replace(/[:T]/g,'-')+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  securityLog('download_snapshot','Snapshot diunduh: '+at);
+}
+function clearLocalData(){
+  if(!confirm('Hapus SEMUA data lokal (produk, pesanan, akun, snapshot, log)? Tindakan ini tidak dapat dibatalkan.'))return;
+  [DB_KEY,'dh_cart','dh_wishlist',SEC.keyGuard,SEC.keyLog,SEC.keySnap].forEach(k=>{try{localStorage.removeItem(k)}catch(_){}});
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
 function exportData(){
   const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
   const a=document.createElement('a');
@@ -2451,7 +2990,7 @@ function renderProfile(){
       <div class="panel"><div class="panel-head"><h3>Ubah password</h3></div>
         <form onsubmit="savePassword(event)">
           <div class="field"><label>Password saat ini</label><input name="current" type="password" required></div>
-          <div class="field"><label>Password baru (min. 6 karakter)</label><input name="next" type="password" minlength="6" required></div>
+          <div class="field"><label>Password baru (min. 8 karakter, huruf + angka)</label><input name="next" type="password" minlength="8" required></div>
           <div class="field"><label>Konfirmasi password baru</label><input name="confirm" type="password" minlength="6" required></div>
           <button class="btn" type="submit">Perbarui password</button>
         </form>
@@ -2474,10 +3013,23 @@ function savePassword(e){
   e.preventDefault();
   const form=e.target;
   const f=n=>form.querySelector('[name="'+n+'"]');
-  if(f('current').value!==DB.settings.adminPassword){showToast('Password saat ini tidak sesuai.','err');return}
+  return savePasswordStep(e,form,f);
+}
+async function savePasswordStep(e,form,f){
+  if(!await verifyAdminPassword(f('current').value)){
+    securityLog('password_change_failed','Password saat ini salah.','warn');
+    showToast('Password saat ini tidak sesuai.','err');return;
+  }
   if(f('next').value!==f('confirm').value){showToast('Konfirmasi password tidak sama.','err');return}
-  DB.settings.adminPassword=f('next').value;
-  saveDB();form.reset();showToast('Password berhasil diperbarui.','ok');
+  const issues=passwordIssues(f('next').value);
+  if(issues.length){showToast('Password lemah: '+issues.join(', ')+'.','err');return}
+  await setAdminPassword(f('next').value,true);
+  saveDB();
+  form.reset();
+  securityLog('password_changed','Password administrator diperbarui.');
+  logActivity('Password administrator diperbarui.');
+  showToast('Password berhasil diperbarui.','ok');
+  if(forcePwActive){forcePwActive=false;closeAdminModal();renderProfile()}
 }
 
 /* ============================== ADMIN EVENTS ============================== */
@@ -2525,6 +3077,7 @@ function initAdmin(){
 }
 
     initPublic();
+    initSecurity();
     initAdmin();
   </script>
   <script type="module">
