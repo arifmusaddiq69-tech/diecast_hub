@@ -44,6 +44,20 @@ Catatan CSP: `script-src` masih memerlukan `'unsafe-inline'` karena seluruh CSS/
 
 - Dependensi runtime: hanya **Three.js** dan add-on resminya, dimuat dari `cdn.jsdelivr.net` dengan **versi dipin** (`three@0.160.0`) — bukan `latest`, sehingga tidak berubah diam-diam.
 - Tidak ada `package.json`, `node_modules`, atau build step → permukaan supply chain minimal.
+
+**Hasil audit dependensi (24 November 2026):**
+
+| Sumber | Hasil untuk `three@0.160.0` |
+|---|---|
+| Snyk Vulnerability DB | Tidak ada direct vulnerability pada paket ini |
+| deps.dev (OSV/GitHub Advisory) | Tidak ada advisory terdeteksi; paket tanpa dependensi |
+| GitHub Advisory | Satu-satunya CVE terkait (CVE-2022-0177) hanya memengaruhi `< 0.137.0` dan statusnya **withdrawn** |
+
+Versi terbaru saat audit adalah `three@0.187.0` (30 Oktober 2026). Karena tidak ada CVE yang berlaku untuk r160 dan upgrade 27 rilis berisiko memecahkan viewer prosedural, versi dipertahankan **dipin** — bukan dibiarkan `latest`. Jadwalkan review ulang setiap 90 hari atau saat ada advisory baru:
+
+- <https://security.snyk.io/package/npm/three>
+- <https://deps.dev/npm/three>
+- <https://github.com/mrdoob/three.js/releases>
 - **Log**: `DB.activity` (aktivitas admin) dan `dh_security_log` (login sukses/gagal, lockout, MFA, perubahan password, snapshot) dipangkas otomatis ke **90 hari**, maksimal 300 entri keamanan.
 - **Backup**: snapshot otomatis tiap 30 menit (maks 3 versi) + tombol *Buat snapshot*, *Pulihkan*, *Unduh*, dan ekspor JSON penuh. Retensi log diatur `SEC.retentionDays`.
 
