@@ -1,0 +1,9 @@
+# artefak lokal, tidak perlu masuk repo/deploy
+artifacts/
+*.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
